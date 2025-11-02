@@ -1,0 +1,39 @@
+{
+  "name": "Product",
+  "ownerField": "ownerId",
+  "fields": [
+    {
+      "name": "name",
+      "type": "string",
+      "required": true,
+      "unique": false
+    },
+    {
+      "name": "price",
+      "type": "number",
+      "required": false,
+      "unique": false,
+      "default": "0"
+    },
+    {
+      "name": "inStock",
+      "type": "boolean",
+      "required": false,
+      "unique": false,
+      "default": true
+    }
+  ],
+  "rbac": {
+    "Admin": [
+      "all"
+    ],
+    "Manager": [
+      "read",
+      "create",
+      "update"
+    ],
+    "Viewer": [
+      "read"
+    ]
+  }
+}

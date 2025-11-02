@@ -18,7 +18,7 @@ if (!DB_NAME || !DB_USER || !DB_PASSWORD) {
 const sequelize = new Sequelize(DB_NAME, DB_USER, DB_PASSWORD, {
   host: DB_HOST || 'localhost',
   dialect: 'mysql',
-  logging: console.log,
+  logging: false
 });
 
 const connectDB = async () => {

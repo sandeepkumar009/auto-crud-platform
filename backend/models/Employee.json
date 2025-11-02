@@ -1,0 +1,32 @@
+{
+  "name": "Employee",
+  "ownerField": "ownerId",
+  "fields": [
+    {
+      "name": "name",
+      "type": "string",
+      "required": true,
+      "unique": false
+    },
+    {
+      "name": "age",
+      "type": "number",
+      "required": false,
+      "unique": false,
+      "default": 0
+    }
+  ],
+  "rbac": {
+    "Admin": [
+      "all"
+    ],
+    "Manager": [
+      "read",
+      "create",
+      "update"
+    ],
+    "Viewer": [
+      "read"
+    ]
+  }
+}
