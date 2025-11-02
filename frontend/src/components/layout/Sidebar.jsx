@@ -1,8 +1,32 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import { NavLink } from 'react-router-dom';
-import { Database, LayoutGrid, PlusSquare } from 'lucide-react'; // Icons
+import { DatabaseZap, Database, LayoutGrid, PlusSquare } from 'lucide-react';
+import { useAuth } from '../../contexts/AuthContext';
+import { api } from '../../services/api';
 
 const Sidebar = () => {
+  const { user } = useAuth();
+
+  const [dynamicModels, setDynamicModels] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchModels = async () => {
+      try {
+        setLoading(true);
+        const response = await api.get('/models');
+        setDynamicModels(response.data);
+      } catch (error) {
+        console.error('Error fetching models:', error);
+        // Don't show an error, just an empty list
+      } finally {
+        setLoading(false);
+      }
+    };
+    
+    fetchModels();
+  }, []);
+
   // Common style for NavLink
   const navLinkClass = ({ isActive }) =>
     `flex items-center px-4 py-3 space-x-3 rounded-lg transition-colors duration-200 ${
@@ -19,7 +43,7 @@ const Sidebar = () => {
         className="flex items-center px-2 mb-8 space-x-2 text-white"
       >
         <div className="p-2 bg-indigo-600 rounded-lg">
-          <Database size={24} />
+          <DatabaseZap size={24} />
         </div>
         <span className="text-xl font-semibold">Auto-CRUD</span>
       </NavLink>
@@ -35,10 +59,12 @@ const Sidebar = () => {
           <span>Dashboard</span>
         </NavLink>
 
-        <NavLink to="/model-builder" className={navLinkClass}>
-          <PlusSquare size={20} />
-          <span>Model Builder</span>
-        </NavLink>
+        {user?.role === 'Admin' && (
+          <NavLink to="/model-builder" className={navLinkClass}>
+            <PlusSquare size={20} />
+            <span>Model Builder</span>
+          </NavLink>
+        )}
 
         {/* Dynamic model links will be added here */}
         <div className="pt-4 mt-4 border-t border-gray-700">
@@ -46,17 +72,26 @@ const Sidebar = () => {
             Models
           </h3>
           <div className="mt-2 space-y-1">
-            {/* Example of what will be dynamically generated later */}
-            <p className="px-4 text-sm text-gray-500">
-              (No models created)
-            </p>
-            {/* <NavLink to="/admin/products" className={navLinkClass}>
-                <span>Products</span>
-              </NavLink>
-              <NavLink to="/admin/employees" className={navLinkClass}>
-                <span>Employees</span>
-              </NavLink>
-            */}
+            {loading ? (
+              <p className="px-3 text-sm text-gray-400">Loading...</p>
+            ) : (
+              dynamicModels.map((modelName) => (
+                <NavLink
+                  key={modelName}
+                  to={`/admin/${modelName.toLowerCase()}`}
+                  className={navLinkClass}
+                >
+                  <Database size={18} className="mr-3" />
+                  {modelName}
+                </NavLink>
+              ))
+            )}
+            
+            {!loading && dynamicModels.length === 0 && (
+              <p className="px-3 text-sm text-gray-400">
+                No models published yet.
+              </p>
+            )}
           </div>
         </div>
       </nav>

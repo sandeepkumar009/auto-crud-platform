@@ -57,7 +57,7 @@ const createSequelizeModel = async (modelDefinition) => {
   const model = sequelize.define(name, schema);
 
   // Sync with DB (creates/alters table)
-  await model.sync({ alter: true });
+  await model.sync();
   console.log(`[Dynamic] Synced model and table for: ${name}`);
 
   // Cache the model

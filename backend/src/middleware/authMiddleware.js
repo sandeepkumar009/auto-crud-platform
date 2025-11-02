@@ -14,7 +14,7 @@ export const protect = async (req, res, next) => {
 
       const decoded = jwt.verify(token, jwtSecret);
 
-      req.user = await User.findByPk(decoded.id, {
+      req.user = await User.findByPk(decoded.user.id, {
         attributes: ['id', 'email', 'role'],
       });
       

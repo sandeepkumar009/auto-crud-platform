@@ -11,23 +11,41 @@ export const AuthProvider = ({ children }) => {
   useEffect(() => {
     if (token) {
       localStorage.setItem('token', token);
-      
       api.defaults.headers.common['Authorization'] = `Bearer ${token}`;
-
-      // We will add a step here later to fetch the user's profile to verify the token is still valid
-
     } else {
       localStorage.removeItem('token');
       delete api.defaults.headers.common['Authorization'];
     }
   }, [token]);
 
+  useEffect(() => {
+    const fetchUser = async () => {
+      const storedToken = localStorage.getItem('token');
+      if (storedToken) {
+        try {
+          api.defaults.headers.common['Authorization'] = `Bearer ${storedToken}`;
+          
+          const response = await api.get('/auth/me');
+          
+          setUser(response.data);
+
+        } catch (error) {
+          console.error('Auth token invalid:', error);
+          setToken(null);
+          setUser(null);
+        }
+      }
+      setLoading(false);
+    };
+
+    fetchUser();
+  }, []);
+
   const login = async (email, password) => {
     try {
       const response = await api.post('/auth/login', { email, password });
-
       const { token, user } = response.data;
-
+      
       setToken(token);
       setUser(user);
       
@@ -43,17 +61,20 @@ export const AuthProvider = ({ children }) => {
     setToken(null);
   };
 
-  // We'll skip the loading effect for now to keep it simple
-
   const value = {
     user,
     token,
     login,
     logout,
+    loading,
     isAuthenticated: !!token,
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+    </AuthContext.Provider>
+  );
 };
 
 export const useAuth = () => {
@@ -63,3 +84,4 @@ export const useAuth = () => {
   }
   return context;
 };
+

@@ -16,7 +16,7 @@ const startServer = async () => {
     await connectDB();
     console.log('[Server] Database connection verified.');
 
-    await sequelize.sync({ alter: true }); 
+    await sequelize.sync();
     console.log('[Server] All static models were synchronized successfully.');
 
     // Initialize all DYNAMIC models from /models dir
