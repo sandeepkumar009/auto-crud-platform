@@ -30,7 +30,7 @@ This README covers the core setup and architecture as required by the assignment
 4. **Install Dependencies & Run**:
     ```
     npm install
-    npm run dev
+    node server.js
     ```
 
     The server will start on http://localhost:8000.
