@@ -1,5 +1,6 @@
 import app from './src/app.js';
 import { connectDB, sequelize } from './src/config/database.js';
+import { initializeDynamicModels } from './src/services/dynamicService.js';
 import dotenv from 'dotenv';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -17,6 +18,9 @@ const startServer = async () => {
 
     await sequelize.sync({ alter: true }); 
     console.log('[Server] All static models were synchronized successfully.');
+
+    // Initialize all DYNAMIC models from /models dir
+    await initializeDynamicModels(app);
 
     app.listen(PORT, () => {
       console.log(`[Server] Server is running on http://localhost:${PORT}`);
