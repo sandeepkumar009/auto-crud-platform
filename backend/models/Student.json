@@ -1,0 +1,49 @@
+{
+  "name": "Student",
+  "fields": [
+    {
+      "name": "Name",
+      "type": "string",
+      "required": true,
+      "unique": false
+    },
+    {
+      "name": "Rool No",
+      "type": "number",
+      "required": true,
+      "unique": true,
+      "default": 0
+    },
+    {
+      "name": "Hobbies",
+      "type": "text",
+      "required": false,
+      "unique": false
+    },
+    {
+      "name": "Addmission Date",
+      "type": "date",
+      "required": true,
+      "unique": false,
+      "default": "2025-04-01"
+    },
+    {
+      "name": "Full Time",
+      "type": "boolean",
+      "required": true,
+      "unique": false,
+      "default": false
+    }
+  ],
+  "rbac": {
+    "Admin": [
+      "all"
+    ],
+    "Manager": [
+      "all"
+    ],
+    "Viewer": [
+      "read"
+    ]
+  }
+}

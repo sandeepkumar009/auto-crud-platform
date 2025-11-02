@@ -1,0 +1,36 @@
+{
+  "name": "Manager",
+  "fields": [
+    {
+      "name": "name",
+      "type": "string",
+      "required": true,
+      "unique": false
+    },
+    {
+      "name": "Department",
+      "type": "string",
+      "required": true,
+      "unique": false,
+      "default": "HR"
+    },
+    {
+      "name": "Salery",
+      "type": "number",
+      "required": false,
+      "unique": false,
+      "default": "1800000"
+    }
+  ],
+  "rbac": {
+    "Admin": [
+      "all"
+    ],
+    "Manager": [
+      "read"
+    ],
+    "Viewer": [
+      "read"
+    ]
+  }
+}

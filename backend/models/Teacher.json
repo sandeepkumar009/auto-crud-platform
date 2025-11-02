@@ -1,0 +1,28 @@
+{
+  "name": "Teacher",
+  "fields": [
+    {
+      "name": "Name",
+      "type": "string",
+      "required": true,
+      "unique": false
+    },
+    {
+      "name": "Subjects",
+      "type": "text",
+      "required": false,
+      "unique": false
+    }
+  ],
+  "rbac": {
+    "Admin": [
+      "all"
+    ],
+    "Manager": [],
+    "Viewer": [
+      "read",
+      "create",
+      "update"
+    ]
+  }
+}

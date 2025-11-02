@@ -3,6 +3,66 @@ import { useAuth } from '../contexts/AuthContext';
 import { api } from '../services/api';
 import { Plus, Trash2, CheckCircle, AlertTriangle } from 'lucide-react';
 
+const getDefaultValueForType = (type) => {
+  switch (type) {
+    case 'number':
+      return 0;
+    case 'boolean':
+      return false;
+    case 'date':
+      return '';
+    case 'string':
+    case 'text':
+    default:
+      return '';
+  }
+};
+
+const RenderDefaultInput = ({ field, index, onChange }) => {
+  const commonProps = {
+    name: 'default',
+    value: field.default,
+    onChange: (e) => onChange(index, e),
+    className: "block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm sm:text-sm"
+  };
+
+  switch (field.type) {
+    case 'number':
+      return (
+        <input
+          {...commonProps}
+          type="number"
+          placeholder="e.g., 0"
+        />
+      );
+    case 'boolean':
+      return (
+        <select {...commonProps}>
+          <option value="false">False</option>
+          <option value="true">True</option>
+        </select>
+      );
+    case 'date':
+      return (
+        <input
+          {...commonProps}
+          type="date"
+        />
+      );
+    case 'string':
+    case 'text':
+    default:
+      return (
+        <input
+          {...commonProps}
+          type="text"
+          placeholder="e.g., 'Pending'"
+        />
+      );
+  }
+};
+
+
 const ModelBuilderPage = () => {
   const { user } = useAuth();
   
@@ -26,12 +86,20 @@ const ModelBuilderPage = () => {
   const handleFieldChange = (index, e) => {
     const { name, value, type, checked } = e.target;
     const newFields = [...fields];
-    
+
+    const currentField = newFields[index];
+
     if (type === 'checkbox') {
-      newFields[index][name] = checked;
+      currentField[name] = checked;
     } else {
-      newFields[index][name] = value;
+      currentField[name] = value;
     }
+
+    // If the 'type' dropdown was changed, reset the default value
+    if (name === 'type') {
+      currentField.default = getDefaultValueForType(value);
+    }
+
     setFields(newFields);
   };
 
@@ -102,7 +170,7 @@ const ModelBuilderPage = () => {
       ownerField: ownerField || undefined,
       fields: fields.map(f => ({
         ...f,
-        default: f.default || undefined, // Send undefined if empty
+        default: f.default === '' ? undefined : f.default,
       })),
       rbac: rbac,
     };
@@ -224,17 +292,14 @@ const ModelBuilderPage = () => {
                     <option value="boolean">Boolean</option>
                     <option value="date">Date</option>
                   </select>
-                </div>
+                </div>                
                 {/* Default Value */}
                 <div className="md:col-span-3">
                   <label className="block text-sm font-medium text-gray-700">Default Value</label>
-                  <input
-                    type="text"
-                    name="default"
-                    value={field.default}
-                    onChange={(e) => handleFieldChange(index, e)}
-                    className="block w-full px-3 py-2 mt-1 border border-gray-300 rounded-md shadow-sm sm:text-sm"
-                    placeholder="e.g., 'Pending' or 0"
+                  <RenderDefaultInput 
+                    field={field} 
+                    index={index} 
+                    onChange={handleFieldChange} 
                   />
                 </div>
                 {/* Options (Checkboxes) */}
